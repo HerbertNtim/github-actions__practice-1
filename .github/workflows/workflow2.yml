@@ -1,0 +1,30 @@
+name: Workflow 2
+on: 
+  issues:
+    types: [opened, edited, deleted]
+jobs:
+  Issues: 
+    runs-on: ubuntu-24.04
+    steps: 
+      - name: Get the code
+        uses: actions/checkout@v4
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: 20
+      - name: Install dependencies
+        run: npm ci
+      - name: Run Issue tests
+        run: npm test
+      - name: Run Issue Lint
+        run: npm run lint
+      - name: Run Issue Build
+        run: npm run build
+      - name: Deploy to production
+        run: echo "Deploying to production"
+  Info:
+    needs: Issues
+    runs-on: ubuntu-24.04
+    steps: 
+      - name: Output Github Context
+        run: echo "The event that triggered this workflow was ${{ github.event_name }}"
